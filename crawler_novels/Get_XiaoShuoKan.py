@@ -10,29 +10,23 @@ from bs4 import BeautifulSoup
 from collections import OrderedDict
 from global_function import get_html_all_content, chrome_get_html_all_content
 
+# 未完成！！！！！！
 
 # 单一小说网址
-novelId = "lw47628"
-ROOT_URL = "https://www.lewenn.com/{0}/".format(novelId)
+novelId = "28386"
+ROOT_URL = "https://www.xiaoshuokan.com/haokan/{0}/index.html".format(novelId)
 DOWN_FLODERS = r"E:\下载小说"
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36'}
-headers = {'Host': ROOT_URL}
-headers = {'Referer': ROOT_URL}
-headers = {'Upgrade-Insecure-Requests': '1'}
-
 
 def rtn_chapter_list_info(html):
 
     soup = BeautifulSoup(html, 'html.parser')
-    novelName = soup.find_all(name="h1", attrs={"class": "f20h"})[0].text
-    # novelName = novelName.replace("\n", "")
+    novelName = soup.find_all(name="div", attrs={"class": "booktitle"})[0].h1.text
+    novelName = novelName.replace("（完）全文阅读", "")
     novelName = novelName.strip()
     novelName = novelName.split("作者")[0]
     print(novelName)
 
-    chapterListInfoSoup = soup.find_all(name="ul", attrs={"class": "chapterlist"})[1]
+    chapterListInfoSoup = soup.find_all(name="span", attrs={"class": "c1"})
 
     chapterListInfoArr = []
 
@@ -63,14 +57,15 @@ def rtn_chapter_txt(chapterHtml):
 
     soup = BeautifulSoup(chapterHtml, 'html.parser')
 
-    txtContent = soup.find_all(name="div", attrs={"id": "content"})[0]
+    txtContent = soup.find_all(name="class", attrs={"class": "bookcontent"})[0].text
 
-    txtContent = str(txtContent).replace("<br/>", "\n")
+    # txtContent = str(txtContent).replace("<br/>", "\n")
 
-    # print(txtContent)
+    print(txtContent)
     # time.sleep(2000)
 
-    txtContent = BeautifulSoup(txtContent, 'html.parser').text
+    # txtContent = BeautifulSoup(txtContent, 'html.parser').text
+
 
     txtContent = txtContent.replace('　　', '')
     txtContent = txtContent.replace('\n\n', '\n')
@@ -82,13 +77,13 @@ def rtn_chapter_txt(chapterHtml):
 
 
 def write_txt_content(txtFileName, chapterName, chapterTxt):
-    with open(txtFileName, 'a', encoding="gbk") as f:
+    with open(txtFileName, 'a', encoding="UTF-8") as f:
         f.write(chapterName + "\n")
         f.write(chapterTxt + "\n\n")
 
 if __name__ == '__main__':
 
-    html = get_html_all_content(ROOT_URL, "f20h", "UTF-8")
+    html = chrome_get_html_all_content(ROOT_URL, "booktitle")
 
     # 返回章节信息
     chapterListInfo, novelName = rtn_chapter_list_info(html)
@@ -101,10 +96,10 @@ if __name__ == '__main__':
     for chapterInfo in chapterListInfo:
         # print(chapterInfo)
 
-        chapterUrl = "{0}{1}".format("https://www.lewenn.com", chapterInfo["href"])
+        chapterUrl = "{0}{1}".format("https://www.xiaoshuokan.com", chapterInfo["href"])
         print(chapterUrl)
 
-        chapterHtml = get_html_all_content(chapterUrl, "content", "UTF-8")
+        chapterHtml = chrome_get_html_all_content(chapterUrl, "content")
         chapterTxt = rtn_chapter_txt(chapterHtml)
         print(chapterTxt)
 

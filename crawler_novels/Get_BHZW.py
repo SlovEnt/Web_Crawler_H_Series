@@ -15,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 
-novelId = "60/60409"  #
+novelId = "113/113690"  #
 ROOT_URL = "https://www.bhzw.cc/book/{0}/".format(novelId)
 DOWN_FLODERS = r"E:\下载小说"
 

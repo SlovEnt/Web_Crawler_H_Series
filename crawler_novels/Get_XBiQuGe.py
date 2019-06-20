@@ -15,7 +15,7 @@ import requests
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 
-novelId = "28960"  # 我哥说他是皇帝
+novelId = "24961"  # 我哥说他是皇帝
 # novelId = "21799" # 长相思(全集）
 ROOT_URL = "https://www.xbiquge.cc/book/{0}/".format(novelId)
 DOWN_FLODERS = r"E:\下载小说"
